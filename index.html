@@ -20,6 +20,7 @@
       --card:   rgba(255,255,255,0.04);
       --border: rgba(255,255,255,0.08);
       --font-display: 'Anton', 'Inter', sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,20 +29,19 @@
     .wchar {
       display: inline-block;
       opacity: 0;
-      transform: translateY(14px) rotate(-4deg);
-      transform-origin: center bottom;
+      transform: scale(0.3);
+      transform-origin: center center;
       will-change: transform, opacity;
     }
     .wchar.wiggle-in {
-      animation: textWiggleIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      animation: textWiggleIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
       animation-delay: var(--wdelay, 0s);
     }
     @keyframes textWiggleIn {
-      0%   { opacity: 0; transform: translateY(14px) rotate(-8deg); }
-      45%  { opacity: 1; transform: translateY(-2px) rotate(6deg); }
-      70%  { transform: translateY(1px) rotate(-3deg); }
-      88%  { transform: translateY(0) rotate(1.5deg); }
-      100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+      0%   { opacity: 0; transform: scale(0.3); }
+      60%  { opacity: 1; transform: scale(1.15); }
+      80%  { transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     html { scroll-behavior: smooth; }
@@ -66,7 +66,7 @@
       height: 68px;
       background: transparent;
       border-bottom: 1px solid transparent;
-      transition: background 0.3s;
+      transition: background 0.3s var(--ease);
     }
 
     .logo {
@@ -104,7 +104,7 @@
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      transition: color 0.2s;
+      transition: color 0.25s var(--ease);
     }
     .nav-links a:hover { color: var(--white); }
 
@@ -114,7 +114,7 @@
       padding: 8px 20px;
       border-radius: 6px;
       font-weight: 700 !important;
-      transition: background 0.2s !important;
+      transition: background 0.25s var(--ease) !important;
     }
     .nav-cta:hover { background: var(--accent) !important; color: var(--white) !important; }
 
@@ -241,7 +241,7 @@
       font-size: 0.95rem;
       text-decoration: none;
       letter-spacing: -0.01em;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
       box-shadow: 0 0 0 0 rgba(26,86,219,0.4);
     }
     .btn-primary:hover {
@@ -257,7 +257,7 @@
       font-weight: 600;
       font-size: 0.95rem;
       text-decoration: none;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
       background: rgba(255,255,255,0.03);
     }
     .btn-ghost:hover {
@@ -380,7 +380,7 @@
       background: var(--navy);
       padding: 40px 36px;
       position: relative;
-      transition: background 0.3s;
+      transition: background 0.3s var(--ease);
       overflow: hidden;
     }
     .service-card::before {
@@ -391,7 +391,7 @@
       background: linear-gradient(90deg, var(--blue), var(--sky));
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform 0.4s ease;
+      transition: transform 0.5s var(--ease);
     }
     .service-card:hover { background: var(--navy2); }
     .service-card:hover::before { transform: scaleX(1); }
@@ -402,7 +402,7 @@
       bottom: -20px; right: -20px;
       width: 100px; height: 100px;
       opacity: 0.04;
-      transition: opacity 0.3s;
+      transition: opacity 0.3s var(--ease);
     }
     .service-card:hover .card-slash { opacity: 0.08; }
 
@@ -439,7 +439,7 @@
       text-decoration: none;
       margin-top: 20px;
       letter-spacing: 0.01em;
-      transition: gap 0.2s;
+      transition: gap 0.25s var(--ease);
     }
     .service-link:hover { gap: 10px; }
 
@@ -738,7 +738,7 @@
       font-size: 0.82rem;
       color: var(--muted);
       text-decoration: none;
-      transition: color 0.2s;
+      transition: color 0.25s var(--ease);
     }
     .footer-links a:hover { color: var(--white); }
     .footer-copy {
@@ -758,7 +758,7 @@
       font-size: 0.85rem;
       color: var(--muted);
       text-decoration: none;
-      transition: color 0.2s;
+      transition: color 0.25s var(--ease);
     }
     .footer-socials a:hover { color: var(--sky); }
     .footer-socials svg { width: 16px; height: 16px; }
@@ -801,7 +801,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      transition: border-color 0.2s;
+      transition: border-color 0.25s var(--ease);
       position: sticky;
       box-shadow: 0 20px 40px rgba(0,0,0,0.35);
       will-change: transform;
@@ -880,7 +880,7 @@
       font-size: 0.85rem;
       font-weight: 600;
       text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.25s var(--ease);
     }
     .pkg-cta.outline {
       border: 1px solid var(--border);
