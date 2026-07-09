@@ -113,6 +113,22 @@
       overflow: hidden;
     }
 
+    /* Looping background video */
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .hero-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: rgba(10,22,40,0.6);
+    }
+
     /* Animated gradient mesh */
     .hero-bg {
       position: absolute;
@@ -900,6 +916,10 @@
 
 <!-- ─── HERO ─── -->
 <section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="assets/hero-bg.mp4" type="video/mp4">
+  </video>
+  <div class="hero-scrim"></div>
   <div class="hero-bg"></div>
 
   <!-- Slash grid watermark -->
