@@ -531,48 +531,104 @@
 
     /* ─── PROCESS ─── */
     .process { background: var(--navy); }
-    .process-steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0;
-      margin-top: 56px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .process-step {
-      padding: 40px 32px;
-      border-right: 1px solid var(--border);
+
+    /* horizontal-drag scroll track: whole content slides left as unit while pinned */
+    .story-scroll {
       position: relative;
+      margin-top: 40px;
+      /* height set by JS = step-count * 100vh (scroll distance) */
     }
-    .process-step:last-child { border-right: none; }
-    .step-num {
-      font-size: 3rem;
-      font-weight: 900;
-      letter-spacing: -0.06em;
-      color: rgba(59,130,246,0.12);
-      line-height: 1;
-      margin-bottom: 16px;
-      display: block;
+    .story-sticky-outer {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--navy);
     }
-    .process-step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-    .process-step p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-    /* Arrow connector */
-    .step-arrow {
+
+    /* dashed line spans full track width, moves together with numbers */
+    .story-line {
       position: absolute;
-      top: 50%; right: -10px;
-      transform: translateY(-50%);
-      width: 20px; height: 20px;
-      background: var(--navy2);
-      border: 1px solid var(--border);
-      border-radius: 50%;
+      left: 0;
+      top: 42%;
+      height: 0;
+      border-top: 2px dashed var(--border);
+      transform: rotate(-2deg);
+      z-index: 0;
+      /* width set by JS = track width */
+    }
+
+    /* decorative pinned marker, stays centered on screen regardless of scroll */
+    .story-mascot {
+      position: absolute;
+      left: 50%;
+      top: 38%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      width: clamp(48px, 6vw, 72px);
+      height: clamp(48px, 6vw, 72px);
+      pointer-events: none;
+    }
+    .story-mascot svg { width: 100%; height: 100%; }
+
+    .story-track {
       display: flex;
+      height: 100%;
+      will-change: transform;
+      /* width set by JS = step-count * 100vw */
+    }
+
+    .story-step {
+      flex: 0 0 100vw;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 2;
+      text-align: center;
+      position: relative;
+      padding: 0 6vw;
     }
-    .step-arrow svg { width: 10px; height: 10px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .process-step:last-child .step-arrow { display: none; }
+
+    .story-num {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(7rem, 18vw, 13rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: transparent;
+      -webkit-text-stroke: 2px rgba(59,130,246,0.55);
+      text-stroke: 2px rgba(59,130,246,0.55);
+    }
+
+    .story-tag {
+      position: relative;
+      z-index: 1;
+      margin-top: 28px;
+      padding: 10px 22px;
+      background: var(--sky);
+      color: var(--navy);
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: 999px;
+    }
+
+    .story-desc {
+      position: relative;
+      z-index: 1;
+      margin-top: 20px;
+      max-width: 480px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 640px) {
+      .story-num { font-size: clamp(5rem, 26vw, 8rem); }
+    }
 
     /* ─── CTA ─── */
     .cta {
@@ -688,9 +744,6 @@
       .nav-links { display: none; }
       .why-inner { grid-template-columns: 1fr; gap: 48px; }
       .cta-box { padding: 48px 28px; }
-      .process-steps { grid-template-columns: 1fr; }
-      .process-step { border-right: none; border-bottom: 1px solid var(--border); }
-      .process-step:last-child { border-bottom: none; }
       .step-arrow { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -1192,36 +1245,44 @@
   <div class="section-label">How It Works</div>
   <h2 class="section-title">From brief to live site in<br><em>four clear steps.</em></h2>
 
-  <div class="process-steps">
-    <div class="process-step">
-      <span class="step-num">01</span>
-      <h3>Discovery Call</h3>
-      <p>We listen first. A 30-minute call to understand your goals, audience, timeline, and what "done" means for your business.</p>
-      <div class="step-arrow">
-        <svg viewBox="0 0 10 10"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
+  <div class="story-scroll">
+    <div class="story-sticky-outer">
+      <div class="story-line"></div>
+
+      <div class="story-mascot" aria-hidden="true">
+        <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="27" fill="none" stroke="var(--sky)" stroke-width="2" opacity="0.5"/>
+          <circle cx="30" cy="30" r="7" fill="var(--sky)"/>
+        </svg>
       </div>
-    </div>
-    <div class="process-step">
-      <span class="step-num">02</span>
-      <h3>Proposal & Design</h3>
-      <p>You get a fixed-price proposal and a visual design mockup within 5 business days — no payment until you approve the direction.</p>
-      <div class="step-arrow">
-        <svg viewBox="0 0 10 10"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
+
+      <div class="story-track">
+
+        <div class="story-step">
+          <span class="story-num">01</span>
+          <div class="story-tag">&bull; Discovery Call &bull;</div>
+          <p class="story-desc">We listen first. A 30-minute call to understand your goals, audience, timeline, and what "done" means for your business.</p>
+        </div>
+
+        <div class="story-step">
+          <span class="story-num">02</span>
+          <div class="story-tag">&bull; Proposal &amp; Design &bull;</div>
+          <p class="story-desc">You get a fixed-price proposal and a visual design mockup within 5 business days — no payment until you approve the direction.</p>
+        </div>
+
+        <div class="story-step">
+          <span class="story-num">03</span>
+          <div class="story-tag">&bull; Build &amp; Review &bull;</div>
+          <p class="story-desc">We build in sprints and share progress updates. Two rounds of revisions are included — you always see what you're getting before it goes live.</p>
+        </div>
+
+        <div class="story-step">
+          <span class="story-num">04</span>
+          <div class="story-tag">&bull; Launch &amp; Support &bull;</div>
+          <p class="story-desc">We handle the deployment, run a full QA pass, and stay available for 30 days post-launch to fix anything that needs attention.</p>
+        </div>
+
       </div>
-    </div>
-    <div class="process-step">
-      <span class="step-num">03</span>
-      <h3>Build & Review</h3>
-      <p>We build in sprints and share progress updates. Two rounds of revisions are included — you always see what you're getting before it goes live.</p>
-      <div class="step-arrow">
-        <svg viewBox="0 0 10 10"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
-      </div>
-    </div>
-    <div class="process-step">
-      <span class="step-num">04</span>
-      <h3>Launch & Support</h3>
-      <p>We handle the deployment, run a full QA pass, and stay available for 30 days post-launch to fix anything that needs attention.</p>
-      <div class="step-arrow"></div>
     </div>
   </div>
 </section>
@@ -1405,6 +1466,69 @@
     window.addEventListener('scroll', wake, { passive: true });
     window.addEventListener('resize', wake);
     wake(); // run once on load to set initial state
+  })();
+</script>
+
+<script>
+  // ─── PROCESS STORY: horizontal-drag scroll track ───
+  // Whole content (number + tag + desc) slides left as one unit while the
+  // section stays pinned (position: sticky). Dashed line moves with the
+  // track so it reads as continuous; the small marker in .story-mascot
+  // stays fixed on screen since it lives outside the track. rAF + lerp
+  // for smooth catch-up, same pattern as the pricing stack script.
+  (function () {
+    var scrollEl = document.querySelector('.story-scroll');
+    var track = document.querySelector('.story-track');
+    var line = document.querySelector('.story-line');
+    if (!scrollEl || !track) return;
+
+    var steps = Array.prototype.slice.call(track.querySelectorAll('.story-step'));
+    var count = steps.length;
+    if (!count) return;
+
+    function sizeTrack() {
+      scrollEl.style.height = (count * 100) + 'vh';
+      track.style.width = (count * 100) + 'vw';
+      if (line) line.style.width = (count * 100) + 'vw';
+    }
+    sizeTrack();
+
+    var current = 0, target = 0, rafId = null;
+    var LERP = 0.12, EPS = 0.05;
+
+    function computeTarget() {
+      var rect = scrollEl.getBoundingClientRect();
+      var total = rect.height - window.innerHeight;
+      if (total <= 0) { target = 0; return; }
+      var scrolled = Math.min(Math.max(-rect.top, 0), total);
+      var progress = scrolled / total;
+      target = progress * (count - 1) * window.innerWidth;
+    }
+
+    function apply(x) {
+      track.style.transform = 'translateX(' + (-x).toFixed(2) + 'px)';
+    }
+
+    function tick() {
+      computeTarget();
+      current += (target - current) * LERP;
+      apply(current);
+      if (Math.abs(target - current) > EPS) {
+        rafId = requestAnimationFrame(tick);
+      } else {
+        current = target;
+        apply(current);
+        rafId = null;
+      }
+    }
+
+    function wake() {
+      if (rafId === null) rafId = requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('scroll', wake, { passive: true });
+    window.addEventListener('resize', function () { sizeTrack(); wake(); });
+    wake();
   })();
 </script>
 </body>
