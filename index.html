@@ -710,14 +710,12 @@
       max-width: 480px;
     }
     .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      max-width: 1200px;
+      max-width: 640px;
       margin: 0 auto;
+      padding-bottom: 40px;
     }
     .pricing-card {
-      background: var(--card);
+      background: linear-gradient(var(--card), var(--card)), var(--navy2);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 32px 24px;
@@ -725,13 +723,15 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      transition: border-color 0.2s, transform 0.2s;
+      transition: border-color 0.2s;
+      position: sticky;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+      will-change: transform;
     }
-    .pricing-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .pricing-card:hover { border-color: var(--accent); }
     .pricing-card.featured {
       border-color: var(--blue);
-      background: rgba(26,86,219,0.12);
-      position: relative;
+      background: linear-gradient(rgba(26,86,219,0.18), rgba(26,86,219,0.18)), var(--navy2);
       overflow: hidden;
     }
     .pricing-card.featured::before {
@@ -746,6 +746,11 @@
       z-index: 0;
     }
     .pricing-card.featured > * { position: relative; z-index: 1; }
+    .pricing-card:nth-child(1) { top: 118px; z-index: 1; margin-bottom: 76px; }
+    .pricing-card:nth-child(2) { top: 194px; z-index: 2; margin-bottom: 76px; }
+    .pricing-card:nth-child(3) { top: 270px; z-index: 3; margin-bottom: 76px; }
+    .pricing-card:nth-child(4) { top: 346px; z-index: 4; margin-bottom: 76px; }
+    .pricing-card:nth-child(5) { top: 422px; z-index: 5; margin-bottom: 0; }
     .pkg-tag {
       font-size: 0.7rem;
       font-weight: 700;
@@ -1119,7 +1124,7 @@
 
   <div class="pricing-grid">
 
-    <div class="pricing-card">
+    <div class="pricing-card" data-stack-index="0">
       <div class="pkg-tag">Starter</div>
       <h3 class="pkg-name">Basic Static</h3>
       <div class="pkg-price">₹3,000 <span>– ₹10,000</span></div>
@@ -1131,7 +1136,7 @@
       <a href="#contact" class="pkg-cta outline">Get a Quote</a>
     </div>
 
-    <div class="pricing-card">
+    <div class="pricing-card" data-stack-index="1">
       <div class="pkg-tag">Popular</div>
       <h3 class="pkg-name">Professional Static</h3>
       <div class="pkg-price">₹10,000 <span>– ₹20,000</span></div>
@@ -1143,7 +1148,7 @@
       <a href="#contact" class="pkg-cta outline">Get a Quote</a>
     </div>
 
-    <div class="pricing-card featured">
+    <div class="pricing-card featured" data-stack-index="2">
       <div class="pkg-tag">Best Value</div>
       <h3 class="pkg-name">Basic Dynamic</h3>
       <div class="pkg-price">₹20,000 <span>– ₹50,000</span></div>
@@ -1155,7 +1160,7 @@
       <a href="#contact" class="pkg-cta filled">Get a Quote</a>
     </div>
 
-    <div class="pricing-card">
+    <div class="pricing-card" data-stack-index="3">
       <div class="pkg-tag">Business</div>
       <h3 class="pkg-name">Business Dynamic</h3>
       <div class="pkg-price">₹50,000 <span>– ₹1,50,000</span></div>
@@ -1167,7 +1172,7 @@
       <a href="#contact" class="pkg-cta outline">Get a Quote</a>
     </div>
 
-    <div class="pricing-card">
+    <div class="pricing-card" data-stack-index="4">
       <div class="pkg-tag">E-Commerce</div>
       <h3 class="pkg-name">Online Store</h3>
       <div class="pkg-price">₹30,000 <span>– ₹3,00,000</span></div>
@@ -1309,6 +1314,97 @@
       document.body.style.overflow = '';
       setTimeout(function () { overlay.remove(); }, 550);
     }, TOTAL_MS);
+  })();
+</script>
+
+<script>
+  // ─── PRICING STICKY-STACK SCROLL ANIMATION ───
+  // rAF loop reacts to scroll, doesn't drive it. Cards lerp toward a
+  // target transform based on distance to their sticky-dock position.
+  // See sticky-stack-animation-prompt-v2.md for the full rationale.
+  (function () {
+    var cards = Array.prototype.slice.call(
+      document.querySelectorAll('.pricing-grid .pricing-card')
+    );
+    if (!cards.length) return;
+
+    var START_OFFSET = 340;   // px window before docking where entrance plays
+    var BASE_TRAVEL = 130;    // desktop horizontal travel
+    var ROTATE_DEG = 6;
+    var LERP = 0.15;
+    var SETTLE_EPS = 0.05;
+
+    var state = cards.map(function (el) {
+      var index = parseInt(el.dataset.stackIndex, 10) || 0;
+      var dockTop = parseFloat(getComputedStyle(el).top) || 0;
+      return {
+        el: el,
+        index: index,
+        dockTop: dockTop,
+        side: index % 2 === 0 ? -1 : 1, // even -> from left, odd -> from right
+        current: { x: 0, rot: 0 },
+        target: { x: 0, rot: 0 }
+      };
+    });
+
+    function easeOutCubic(p) { return 1 - Math.pow(1 - p, 3); }
+
+    function maxTravelFor(el) {
+      var cardWidth = el.getBoundingClientRect().width;
+      var halfGap = Math.max(0, (window.innerWidth - cardWidth) / 2 - 4);
+      return Math.min(BASE_TRAVEL, halfGap);
+    }
+
+    var rafId = null;
+
+    function computeTargets() {
+      state.forEach(function (s) {
+        if (s.index === 0) { // base card: never animates
+          s.target.x = 0;
+          s.target.rot = 0;
+          return;
+        }
+        var rect = s.el.getBoundingClientRect();
+        var distanceToDock = rect.top - s.dockTop; // >0 = still approaching
+        var progress = 1 - Math.min(Math.max(distanceToDock / START_OFFSET, 0), 1);
+        var eased = easeOutCubic(progress);
+        var travel = maxTravelFor(s.el);
+        // side -1 -> enters from left (negative x), tilts clockwise (+deg)
+        // side +1 -> enters from right (positive x), tilts counter-clockwise (-deg)
+        var fromX = s.side * travel;
+        s.target.x = fromX * (1 - eased);
+        s.target.rot = (s.side === -1 ? ROTATE_DEG : -ROTATE_DEG) * (1 - eased);
+      });
+    }
+
+    function tick() {
+      computeTargets();
+      var stillMoving = false;
+      state.forEach(function (s) {
+        if (s.index === 0) return;
+        s.current.x += (s.target.x - s.current.x) * LERP;
+        s.current.rot += (s.target.rot - s.current.rot) * LERP;
+        if (Math.abs(s.target.x - s.current.x) > SETTLE_EPS ||
+            Math.abs(s.target.rot - s.current.rot) > SETTLE_EPS) {
+          stillMoving = true;
+        }
+        s.el.style.transform =
+          'translateX(' + s.current.x.toFixed(2) + 'px) rotate(' + s.current.rot.toFixed(2) + 'deg)';
+      });
+      if (stillMoving) {
+        rafId = requestAnimationFrame(tick);
+      } else {
+        rafId = null; // stop; woken by scroll/resize
+      }
+    }
+
+    function wake() {
+      if (rafId === null) rafId = requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('scroll', wake, { passive: true });
+    window.addEventListener('resize', wake);
+    wake(); // run once on load to set initial state
   })();
 </script>
 </body>
