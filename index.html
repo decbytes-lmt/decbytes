@@ -24,6 +24,26 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ─── TEXT WIGGLE-IN (sitewide, per-character) ─── */
+    .wchar {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(14px) rotate(-4deg);
+      transform-origin: center bottom;
+      will-change: transform, opacity;
+    }
+    .wchar.wiggle-in {
+      animation: textWiggleIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      animation-delay: var(--wdelay, 0s);
+    }
+    @keyframes textWiggleIn {
+      0%   { opacity: 0; transform: translateY(14px) rotate(-8deg); }
+      45%  { opacity: 1; transform: translateY(-2px) rotate(6deg); }
+      70%  { transform: translateY(1px) rotate(-3deg); }
+      88%  { transform: translateY(0) rotate(1.5deg); }
+      100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    }
+
     html { scroll-behavior: smooth; }
 
     body {
@@ -1531,6 +1551,61 @@
     window.addEventListener('scroll', wake, { passive: true });
     window.addEventListener('resize', function () { sizeTrack(); wake(); });
     wake();
+  })();
+</script>
+
+<script>
+  // ─── TEXT WIGGLE-IN: split every heading/paragraph/list item into
+  // per-character spans; each character plays its own one-shot wiggle,
+  // staggered, the first time it's on screen (on load if above the fold,
+  // on scroll-into-view otherwise). ───
+  (function () {
+    var SKIP_ANCESTORS = 'nav, footer, .intro-overlay, .btn-primary, .btn-ghost, .nav-cta';
+    var STAGGER = 0.015; // seconds between each character
+
+    function wrapChars(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+        if (child.nodeType === 3) { // text node
+          if (!child.textContent.trim()) return;
+          var frag = document.createDocumentFragment();
+          Array.prototype.forEach.call(child.textContent, function (ch) {
+            if (/\s/.test(ch)) {
+              frag.appendChild(document.createTextNode(ch));
+            } else {
+              var span = document.createElement('span');
+              span.className = 'wchar';
+              span.textContent = ch;
+              frag.appendChild(span);
+            }
+          });
+          node.replaceChild(frag, child);
+        } else if (child.nodeType === 1) {
+          wrapChars(child);
+        }
+      });
+    }
+
+    var els = Array.prototype.slice.call(document.querySelectorAll('h1, h2, h3, h4, p, li'))
+      .filter(function (el) { return !el.closest(SKIP_ANCESTORS); });
+    if (!els.length) return;
+
+    els.forEach(function (el) {
+      wrapChars(el);
+      var chars = el.querySelectorAll('.wchar');
+      chars.forEach(function (c, i) { c.style.setProperty('--wdelay', (i * STAGGER) + 's'); });
+    });
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var chars = entry.target.querySelectorAll('.wchar');
+          chars.forEach(function (c) { c.classList.add('wiggle-in'); });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    els.forEach(function (el) { observer.observe(el); });
   })();
 </script>
 </body>
