@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DekBytes — Web Services That Work</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Tokens ─── */
+    :root {
+      --navy:   #0A1628;
+      --navy2:  #0F1F3D;
+      --blue:   #1A56DB;
+      --accent: #3B82F6;
+      --sky:    #0EA5E9;
+      --white:  #F8FAFF;
+      --muted:  #94A3B8;
+      --card:   rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5vw;
+      height: 68px;
+      background: rgba(10,22,40,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    /* DB logo mark */
+    .logo-mark {
+      height: 48px;
+      width: 48px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--white);
+    }
+    .logo-text span { color: var(--sky); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--blue);
+      color: var(--white) !important;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600 !important;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--accent) !important; color: var(--white) !important; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 5vw 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated gradient mesh */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(26,86,219,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 70%, rgba(14,165,233,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 80% at 50% 50%, rgba(59,130,246,0.08) 0%, transparent 70%);
+      animation: meshPulse 8s ease-in-out infinite alternate;
+    }
+    @keyframes meshPulse {
+      0%   { opacity: 0.8; transform: scale(1); }
+      100% { opacity: 1;   transform: scale(1.04); }
+    }
+
+    /* Diagonal slash grid — signature motif */
+    .slash-grid {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      opacity: 0.04;
+    }
+    .slash-grid svg { width: 100%; height: 100%; }
+
+    .hero-content { position: relative; z-index: 1; max-width: 860px; }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(26,86,219,0.15);
+      border: 1px solid rgba(26,86,219,0.35);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 2rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--sky);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+      color: var(--white);
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--sky));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue), var(--accent));
+      color: var(--white);
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 0 0 rgba(26,86,219,0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(26,86,219,0.45);
+    }
+
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+      background: rgba(255,255,255,0.03);
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* Stat strip below hero CTA */
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      margin-top: 4rem;
+      flex-wrap: wrap;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: var(--white);
+    }
+    .hero-stat .num span { color: var(--sky); }
+    .hero-stat .label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.4;
+      z-index: 1;
+    }
+    .scroll-hint span { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .scroll-hint .chevrons { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .scroll-hint .ch {
+      width: 10px; height: 10px;
+      border-right: 1.5px solid var(--muted);
+      border-bottom: 1.5px solid var(--muted);
+      transform: rotate(45deg);
+      animation: bounce 1.6s ease-in-out infinite;
+    }
+    .scroll-hint .ch:nth-child(2) { animation-delay: 0.2s; }
+    @keyframes bounce { 0%,100%{opacity:0.3;transform:rotate(45deg) translateY(-3px)} 50%{opacity:1;transform:rotate(45deg) translateY(3px)} }
+
+    /* ─── SECTION SHELL ─── */
+    section { padding: 100px 5vw; }
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--sky);
+      border-radius: 2px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.12;
+      max-width: 600px;
+    }
+    .section-title em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    /* ─── SERVICES ─── */
+    .services { background: var(--navy); }
+    .services-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 56px;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .services-head p {
+      max-width: 360px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 0.95rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .service-card {
+      background: var(--navy);
+      padding: 40px 36px;
+      position: relative;
+      transition: background 0.3s;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--sky));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .service-card:hover { background: var(--navy2); }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    /* Slash watermark on each card */
+    .card-slash {
+      position: absolute;
+      bottom: -20px; right: -20px;
+      width: 100px; height: 100px;
+      opacity: 0.04;
+      transition: opacity 0.3s;
+    }
+    .service-card:hover .card-slash { opacity: 0.08; }
+
+    .service-icon {
+      width: 48px; height: 48px;
+      background: rgba(26,86,219,0.12);
+      border: 1px solid rgba(26,86,219,0.25);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .service-icon svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+    .service-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .service-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .service-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      margin-top: 20px;
+      letter-spacing: 0.01em;
+      transition: gap 0.2s;
+    }
+    .service-link:hover { gap: 10px; }
+
+    /* ─── WHY US ─── */
+    .why {
+      background: var(--navy2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .why-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .why-visual {
+      position: relative;
+    }
+
+    /* Geometric panel — slash motif made structural */
+    .why-panel {
+      width: 100%;
+      aspect-ratio: 1 / 0.85;
+      background: rgba(26,86,219,0.07);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    .why-panel-inner {
+      position: absolute;
+      inset: 20px;
+      border: 1px solid rgba(14,165,233,0.12);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .metric-row {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      padding: 0 24px;
+    }
+    .metric-box {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .metric-box .big {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, var(--accent), var(--sky));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .metric-box .tiny {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    .why-list { list-style: none; margin-top: 2.5rem; display: flex; flex-direction: column; gap: 20px; }
+    .why-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .why-check {
+      width: 22px; height: 22px;
+      background: rgba(14,165,233,0.12);
+      border: 1px solid rgba(14,165,233,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .why-check svg { width: 11px; height: 11px; stroke: var(--sky); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .why-list li p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .why-list li strong { color: var(--white); font-weight: 600; }
+
+    /* ─── PROCESS ─── */
+    .process { background: var(--navy); }
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0;
+      margin-top: 56px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .process-step {
+      padding: 40px 32px;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .process-step:last-child { border-right: none; }
+    .step-num {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      color: rgba(59,130,246,0.12);
+      line-height: 1;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .process-step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .process-step p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    /* Arrow connector */
+    .step-arrow {
+      position: absolute;
+      top: 50%; right: -10px;
+      transform: translateY(-50%);
+      width: 20px; height: 20px;
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    .step-arrow svg { width: 10px; height: 10px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .process-step:last-child .step-arrow { display: none; }
+
+    /* ─── CTA ─── */
+    .cta {
+      background: var(--navy);
+      padding: 120px 5vw;
+    }
+    .cta-box {
+      max-width: 860px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(26,86,219,0.18), rgba(14,165,233,0.10));
+      border: 1px solid rgba(26,86,219,0.3);
+      border-radius: 20px;
+      padding: 72px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(26,86,219,0.2), transparent);
+      pointer-events: none;
+    }
+
+    /* large slash watermark in CTA */
+    .cta-slash {
+      position: absolute;
+      right: -40px; bottom: -40px;
+      width: 280px; height: 280px;
+      opacity: 0.06;
+    }
+
+    .cta-box h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .cta-box p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.65;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      position: relative;
+    }
+    .cta-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 5vw 32px;
+      background: var(--navy);
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy {
+      font-size: 0.78rem;
+      color: rgba(148,163,184,0.5);
+    }
+    .footer-socials {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-socials a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-socials a:hover { color: var(--sky); }
+    .footer-socials svg { width: 16px; height: 16px; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 0 4vw; }
+      .nav-links { display: none; }
+      .why-inner { grid-template-columns: 1fr; gap: 48px; }
+      .cta-box { padding: 48px 28px; }
+      .process-steps { grid-template-columns: 1fr; }
+      .process-step { border-right: none; border-bottom: 1px solid var(--border); }
+      .process-step:last-child { border-bottom: none; }
+      .step-arrow { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-bg, .hero-eyebrow::before, .scroll-hint .ch { animation: none; }
+      .btn-primary:hover { transform: none; }
+    }
+
+    /* ─── PRICING ─── */
+    .pricing {
+      padding: 100px 5vw;
+      text-align: center;
+    }
+    .pricing-note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin: 12px auto 56px;
+      max-width: 480px;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .pricing-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .pricing-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .pricing-card.featured {
+      border-color: var(--blue);
+      background: rgba(26,86,219,0.12);
+    }
+    .pkg-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sky);
+    }
+    .pkg-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .pkg-price {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--white);
+    }
+    .pkg-price span {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .pkg-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+    .pkg-features li {
+      font-size: 0.88rem;
+      color: var(--muted);
+      padding-left: 18px;
+      position: relative;
+    }
+    .pkg-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--sky);
+      font-weight: 700;
+    }
+    .pkg-cta {
+      display: block;
+      text-align: center;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .pkg-cta.outline {
+      border: 1px solid var(--border);
+      color: var(--white);
+    }
+    .pkg-cta.outline:hover { border-color: var(--accent); background: rgba(59,130,246,0.1); }
+    .pkg-cta.filled {
+      background: var(--blue);
+      color: #fff;
+    }
+    .pkg-cta.filled:hover { background: var(--accent); }
+
+    /* ─── INTRO / PRELOADER ─── */
+    #intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--navy);
+      overflow: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #intro-overlay.intro-hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #intro-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .intro-logo {
+      width: 220px;
+      height: auto;
+      opacity: 0;
+      transform: scale(0.6);
+      animation: introLogoIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 2;
+      filter: drop-shadow(0 0 24px rgba(59,130,246,0.35));
+    }
+    @keyframes introLogoIn {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .intro-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 130px;
+      height: auto;
+      opacity: 0;
+      --tx: 0px;
+      --ty: 0px;
+      --rot: 0deg;
+      transform: translate(-50%, -50%) translate(0, 0) scale(0.4) rotate(var(--rot));
+      animation: introIconIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: var(--delay, 0s);
+    }
+    @keyframes introIconIn {
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1) rotate(0deg);
+      }
+    }
+    /* tilt direction opposite to each icon's outward shift direction (per sticky-stack notes) */
+    .intro-icon.pos-vscode  { --rot: -8deg; }
+    .intro-icon.pos-gear    { --rot: 8deg; }
+    .intro-icon.pos-browser { --rot: 8deg; }
+    .intro-icon.pos-laptop  { --rot: -8deg; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .intro-logo, .intro-icon {
+        animation: none;
+        opacity: 1;
+        transform: translate(-50%, -50%) translate(var(--tx), var(--ty));
+      }
+      .intro-logo { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── INTRO / PRELOADER ─── -->
+<div id="intro-overlay">
+  <div id="intro-stage">
+    <img class="intro-icon pos-vscode"  data-dx="-0.16" data-dy="-0.27" src="assets/icon-vscode.png" alt="" aria-hidden="true">
+    <img class="intro-icon pos-gear"    data-dx="0.31"  data-dy="-0.21" src="assets/icon-gear.png" alt="" aria-hidden="true">
+    <img class="intro-icon pos-browser" data-dx="-0.30" data-dy="0.28"  src="assets/icon-browser.png" alt="" aria-hidden="true">
+    <img class="intro-icon pos-laptop"  data-dx="0.20"  data-dy="0.25"  src="assets/icon-laptop.png" alt="" aria-hidden="true">
+    <img class="intro-logo" src="assets/logo-center.png" alt="DecBytes">
+  </div>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="#" class="logo">
+    <img class="logo-mark" src="dekbytes-logo.png" alt="DekBytes logo" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+
+  <!-- Slash grid watermark -->
+  <div class="slash-grid">
+    <svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="slashes" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          <line x1="60" y1="0" x2="20" y2="80" stroke="white" stroke-width="1.5"/>
+        </pattern>
+      </defs>
+      <rect width="1400" height="900" fill="url(#slashes)"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Web Services Built for Growth</div>
+    <h1>We build websites that <em>work</em> as hard<br>as your business does.</h1>
+    <p class="hero-sub">DekBytes designs, builds, and maintains high-performance websites for businesses that can't afford downtime or mediocre first impressions.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Start a Project</a>
+      <a href="#services" class="btn-ghost">See Our Work →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">150<span>+</span></div>
+        <div class="label">Sites Launched</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">98<span>%</span></div>
+        <div class="label">Client Retention</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">4<span>hr</span></div>
+        <div class="label">Avg. Response Time</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">5<span>★</span></div>
+        <div class="label">Average Rating</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="chevrons">
+      <div class="ch"></div>
+      <div class="ch"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SERVICES ─── -->
+<section class="services" id="services">
+  <div class="services-head">
+    <div>
+      <div class="section-label">What We Do</div>
+      <h2 class="section-title">Every service your<br><em>online presence</em> needs.</h2>
+    </div>
+    <p>From first concept to ongoing care — we handle the full lifecycle so you can focus on running your business.</p>
+  </div>
+
+  <div class="services-grid">
+
+    <div class="service-card">
+      <div class="card-slash">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><line x1="80" y1="0" x2="20" y2="100" stroke="white" stroke-width="8"/></svg>
+      </div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <h3>Website Design</h3>
+      <p>Purpose-built layouts, not templates. We design to your brand, your audience, and your conversion goals — then hand you something you're proud to show off.</p>
+      <a href="#" class="service-link">Learn more <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+
+    <div class="service-card">
+      <div class="card-slash">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><line x1="80" y1="0" x2="20" y2="100" stroke="white" stroke-width="8"/></svg>
+      </div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </div>
+      <h3>Web Development</h3>
+      <p>Clean, fast code built on modern standards. Whether it's a marketing site, e-commerce store, or custom web app — we build it to load fast and scale further.</p>
+      <a href="#" class="service-link">Learn more <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+
+    <div class="service-card">
+      <div class="card-slash">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><line x1="80" y1="0" x2="20" y2="100" stroke="white" stroke-width="8"/></svg>
+      </div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>Maintenance & Hosting</h3>
+      <p>We keep your site updated, secure, and online — 24/7 monitoring, regular backups, plugin updates, and a team you can actually reach when something goes wrong.</p>
+      <a href="#" class="service-link">Learn more <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap: "round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+
+    <div class="service-card">
+      <div class="card-slash">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><line x1="80" y1="0" x2="20" y2="100" stroke="white" stroke-width="8"/></svg>
+      </div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <h3>SEO & Performance</h3>
+      <p>Speed and visibility aren't afterthoughts. We optimise core web vitals, structure your content for search, and track what's actually driving traffic and leads.</p>
+      <a href="#" class="service-link">Learn more <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+
+    <div class="service-card">
+      <div class="card-slash">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><line x1="80" y1="0" x2="20" y2="100" stroke="white" stroke-width="8"/></svg>
+      </div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <h3>Redesigns & Migrations</h3>
+      <p>Already have a site that's letting you down? We'll audit it, rebuild what's broken, and migrate everything cleanly — without losing your rankings or your data.</p>
+      <a href="#" class="service-link">Learn more <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+
+    <div class="service-card">
+      <div class="card-slash">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><line x1="80" y1="0" x2="20" y2="100" stroke="white" stroke-width="8"/></svg>
+      </div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 10h4M7 13h2"/></svg>
+      </div>
+      <h3>Content & CMS Setup</h3>
+      <p>We set you up with a content management system you can actually use — no developer needed to update your blog, team page, or product listings.</p>
+      <a href="#" class="service-link">Learn more <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── WHY US ─── -->
+<section class="why" id="why">
+  <div class="why-inner">
+    <div class="why-visual">
+      <div class="why-panel">
+        <div class="why-panel-inner">
+          <div class="metric-row">
+            <div class="metric-box">
+              <div class="big">99.9<span style="font-size:1rem">%</span></div>
+              <div class="tiny">Uptime SLA</div>
+            </div>
+            <div class="metric-box">
+              <div class="big">&lt;1.2<span style="font-size:1rem">s</span></div>
+              <div class="tiny">Avg. Load Time</div>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-box">
+              <div class="big">100</div>
+              <div class="tiny">Lighthouse Score</div>
+            </div>
+            <div class="metric-box">
+              <div class="big">24/7</div>
+              <div class="tiny">Monitoring</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Why DekBytes</div>
+      <h2 class="section-title">We treat your site like it's <em>our</em> business.</h2>
+      <ul class="why-list">
+        <li>
+          <div class="why-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+          <p><strong>No bloated agencies.</strong> You work directly with the people building your site — no account managers buffering your messages into oblivion.</p>
+        </li>
+        <li>
+          <div class="why-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+          <p><strong>Fixed-scope, fixed price.</strong> Proposals include everything. No surprise invoices when you need a revision or an extra page.</p>
+        </li>
+        <li>
+          <div class="why-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+          <p><strong>You own everything.</strong> Code, domain, hosting logins — all yours from day one. We don't hold your site hostage.</p>
+        </li>
+        <li>
+          <div class="why-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+          <p><strong>Speed is the product.</strong> Every project ships with a performance audit. We don't deliver a site that scores below 90 on Lighthouse.</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRICING ─── -->
+<section class="pricing" id="pricing">
+  <div class="section-label">Transparent Pricing</div>
+  <h2 class="section-title">Packages built for<br><em>every stage of growth.</em></h2>
+  <p class="pricing-note">Prices shown in INR. Final quote depends on project complexity. Additional features may add charges.</p>
+
+  <div class="pricing-grid">
+
+    <div class="pricing-card">
+      <div class="pkg-tag">Starter</div>
+      <h3 class="pkg-name">Basic Static</h3>
+      <div class="pkg-price">₹3,000 <span>– ₹10,000</span></div>
+      <ul class="pkg-features">
+        <li>1–5 pages</li>
+        <li>Responsive design</li>
+        <li>Contact info page</li>
+      </ul>
+      <a href="#contact" class="pkg-cta outline">Get a Quote</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pkg-tag">Popular</div>
+      <h3 class="pkg-name">Professional Static</h3>
+      <div class="pkg-price">₹10,000 <span>– ₹20,000</span></div>
+      <ul class="pkg-features">
+        <li>5–10 pages</li>
+        <li>Custom design</li>
+        <li>SEO basics</li>
+      </ul>
+      <a href="#contact" class="pkg-cta outline">Get a Quote</a>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="pkg-tag">Best Value</div>
+      <h3 class="pkg-name">Basic Dynamic</h3>
+      <div class="pkg-price">₹20,000 <span>– ₹50,000</span></div>
+      <ul class="pkg-features">
+        <li>Login & user forms</li>
+        <li>Database integration</li>
+        <li>Admin panel</li>
+      </ul>
+      <a href="#contact" class="pkg-cta filled">Get a Quote</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pkg-tag">Business</div>
+      <h3 class="pkg-name">Business Dynamic</h3>
+      <div class="pkg-price">₹50,000 <span>– ₹1,50,000</span></div>
+      <ul class="pkg-features">
+        <li>User management</li>
+        <li>Dashboard & analytics</li>
+        <li>Reports & exports</li>
+      </ul>
+      <a href="#contact" class="pkg-cta outline">Get a Quote</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pkg-tag">E-Commerce</div>
+      <h3 class="pkg-name">Online Store</h3>
+      <div class="pkg-price">₹30,000 <span>– ₹3,00,000</span></div>
+      <ul class="pkg-features">
+        <li>Products & cart</li>
+        <li>Payment gateway</li>
+        <li>Order management</li>
+      </ul>
+      <a href="#contact" class="pkg-cta outline">Get a Quote</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── PROCESS ─── -->
+<section class="process" id="process">
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title">From brief to live site in<br><em>four clear steps.</em></h2>
+
+  <div class="process-steps">
+    <div class="process-step">
+      <span class="step-num">01</span>
+      <h3>Discovery Call</h3>
+      <p>We listen first. A 30-minute call to understand your goals, audience, timeline, and what "done" means for your business.</p>
+      <div class="step-arrow">
+        <svg viewBox="0 0 10 10"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">02</span>
+      <h3>Proposal & Design</h3>
+      <p>You get a fixed-price proposal and a visual design mockup within 5 business days — no payment until you approve the direction.</p>
+      <div class="step-arrow">
+        <svg viewBox="0 0 10 10"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">03</span>
+      <h3>Build & Review</h3>
+      <p>We build in sprints and share progress updates. Two rounds of revisions are included — you always see what you're getting before it goes live.</p>
+      <div class="step-arrow">
+        <svg viewBox="0 0 10 10"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">04</span>
+      <h3>Launch & Support</h3>
+      <p>We handle the deployment, run a full QA pass, and stay available for 30 days post-launch to fix anything that needs attention.</p>
+      <div class="step-arrow"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section class="cta" id="contact">
+  <div class="cta-box">
+    <div class="cta-slash">
+      <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="220" y1="0" x2="60" y2="280" stroke="white" stroke-width="40"/>
+        <line x1="280" y1="0" x2="120" y2="280" stroke="white" stroke-width="20" opacity="0.5"/>
+      </svg>
+    </div>
+    <h2>Ready to build something<br>worth showing off?</h2>
+    <p>Tell us about your project. We'll get back to you within one business day with a honest take and a clear next step.</p>
+    <div class="cta-actions">
+      <a href="mailto:decbytes@gmail.com" class="btn-primary">decbytes@gmail.com</a>
+      <a href="tel:+917892406535" class="btn-ghost">+91 78924 06535</a>
+      <a href="https://instagram.com/decbytes" target="_blank" class="btn-ghost">Instagram →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <a href="#" class="logo">
+      <img class="logo-mark" src="dekbytes-logo.png" alt="DekBytes logo" />
+    </a>
+    <ul class="footer-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#why">About</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="footer-socials">
+      <a href="mailto:decbytes@gmail.com" title="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        decbytes@gmail.com
+      </a>
+      <a href="tel:+917892406535" title="Phone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        +91 78924 06535
+      </a>
+      <a href="https://instagram.com/decbytes" target="_blank" title="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        @decbytes
+      </a>
+    </div>
+    <p class="footer-copy">© 2025 DekBytes. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // ─── INTRO ANIMATION ───
+  // Runs once per browser session. Icons fly outward from the center logo,
+  // tilted + offset like a dealt card, straightening as they settle (see
+  // sticky-stack-animation-prompt notes: opposite-rotation pairing, cubic
+  // ease-out, and clamped travel distance so nothing overflows on mobile).
+  (function () {
+    var overlay = document.getElementById('intro-overlay');
+    if (!overlay) return;
+
+    // Runs on every load/refresh (no session gate).
+    document.body.style.overflow = 'hidden';
+
+    // Clamp outward travel to whatever room the viewport actually has,
+    // so small phones never push an icon (or its transform) off-screen.
+    var icons = overlay.querySelectorAll('.intro-icon');
+    icons.forEach(function (icon, i) {
+      var dx = parseFloat(icon.dataset.dx) * window.innerWidth;
+      var dy = parseFloat(icon.dataset.dy) * window.innerHeight;
+      // keep icon fully on-screen regardless of viewport size
+      var halfW = window.innerWidth / 2 - 80;
+      var halfH = window.innerHeight / 2 - 80;
+      dx = Math.max(-halfW, Math.min(halfW, dx));
+      dy = Math.max(-halfH, Math.min(halfH, dy));
+      icon.style.setProperty('--tx', dx + 'px');
+      icon.style.setProperty('--ty', dy + 'px');
+      icon.style.setProperty('--delay', (0.45 + i * 0.18) + 's');
+    });
+
+    var TOTAL_MS = 2600;
+    setTimeout(function () {
+      overlay.classList.add('intro-hide');
+      document.body.style.overflow = '';
+      setTimeout(function () { overlay.remove(); }, 550);
+    }, TOTAL_MS);
+  })();
+</script>
+</body>
+</html>
