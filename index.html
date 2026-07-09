@@ -6,7 +6,7 @@
   <title>DekBytes — Web Services That Work</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Anton&display=swap" rel="stylesheet" />
   <style>
     /* ─── Tokens ─── */
     :root {
@@ -19,6 +19,7 @@
       --muted:  #94A3B8;
       --card:   rgba(255,255,255,0.04);
       --border: rgba(255,255,255,0.08);
+      --font-display: 'Anton', 'Inter', sans-serif;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,9 +82,10 @@
     .nav-links a {
       color: var(--muted);
       text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--white); }
@@ -93,7 +95,7 @@
       color: var(--white) !important;
       padding: 8px 20px;
       border-radius: 6px;
-      font-weight: 600 !important;
+      font-weight: 700 !important;
       transition: background 0.2s !important;
     }
     .nav-cta:hover { background: var(--accent) !important; color: var(--white) !important; }
@@ -164,10 +166,12 @@
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
     .hero h1 {
-      font-size: clamp(2.6rem, 6vw, 4.5rem);
-      font-weight: 900;
-      line-height: 1.08;
-      letter-spacing: -0.04em;
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      font-weight: 400;
+      text-transform: uppercase;
+      line-height: 1.02;
+      letter-spacing: -0.01em;
       margin-bottom: 1.5rem;
       color: var(--white);
     }
@@ -237,9 +241,10 @@
     }
     .hero-stat { text-align: center; }
     .hero-stat .num {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.05em;
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 400;
+      letter-spacing: 0;
       color: var(--white);
     }
     .hero-stat .num span { color: var(--sky); }
@@ -288,20 +293,21 @@
       margin-bottom: 1rem;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
     }
-    .section-label::before {
+    .section-label::after {
       content: '';
-      display: block;
-      width: 24px; height: 2px;
-      background: var(--sky);
-      border-radius: 2px;
+      flex: 1;
+      height: 0;
+      border-top: 1px dashed var(--border);
     }
     .section-title {
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.12;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4.2vw, 3.2rem);
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 1.06;
       max-width: 600px;
     }
     .section-title em {
@@ -431,6 +437,17 @@
       overflow: hidden;
       position: relative;
     }
+    .why-panel::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 70%;
+      aspect-ratio: 1 / 1;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14,165,233,0.18), transparent 72%);
+      z-index: 0;
+    }
     .why-panel-inner {
       position: absolute;
       inset: 20px;
@@ -441,6 +458,7 @@
       align-items: center;
       justify-content: center;
       gap: 16px;
+      z-index: 1;
     }
 
     .metric-row {
@@ -458,9 +476,10 @@
       text-align: center;
     }
     .metric-box .big {
-      font-size: 1.8rem;
-      font-weight: 800;
-      letter-spacing: -0.04em;
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 0;
       background: linear-gradient(135deg, var(--accent), var(--sky));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -575,9 +594,11 @@
     }
 
     .cta-box h2 {
-      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-      font-weight: 900;
-      letter-spacing: -0.04em;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
       margin-bottom: 1rem;
       position: relative;
     }
@@ -696,7 +717,21 @@
     .pricing-card.featured {
       border-color: var(--blue);
       background: rgba(26,86,219,0.12);
+      position: relative;
+      overflow: hidden;
     }
+    .pricing-card.featured::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59,130,246,0.35), transparent 70%);
+      z-index: 0;
+    }
+    .pricing-card.featured > * { position: relative; z-index: 1; }
     .pkg-tag {
       font-size: 0.7rem;
       font-weight: 700;
@@ -710,8 +745,9 @@
       color: var(--white);
     }
     .pkg-price {
-      font-size: 1.3rem;
-      font-weight: 800;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
       color: var(--white);
     }
     .pkg-price span {
