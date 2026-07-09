@@ -840,10 +840,10 @@
 <!-- ─── INTRO / PRELOADER ─── -->
 <div id="intro-overlay">
   <div id="intro-stage">
-    <img class="intro-icon pos-vscode"  data-dx="-0.16" data-dy="-0.27" src="assets/icon-vscode.png" alt="" aria-hidden="true">
-    <img class="intro-icon pos-gear"    data-dx="0.31"  data-dy="-0.21" src="assets/icon-gear.png" alt="" aria-hidden="true">
-    <img class="intro-icon pos-browser" data-dx="-0.30" data-dy="0.28"  src="assets/icon-browser.png" alt="" aria-hidden="true">
-    <img class="intro-icon pos-laptop"  data-dx="0.20"  data-dy="0.25"  src="assets/icon-laptop.png" alt="" aria-hidden="true">
+    <img class="intro-icon pos-vscode"  data-dx="-0.16" data-dy="-0.27" data-mdx="-0.27" data-mdy="-0.35" src="assets/icon-vscode.png" alt="" aria-hidden="true">
+    <img class="intro-icon pos-gear"    data-dx="0.31"  data-dy="-0.21" data-mdx="0.33"  data-mdy="-0.35" src="assets/icon-gear.png" alt="" aria-hidden="true">
+    <img class="intro-icon pos-browser" data-dx="-0.30" data-dy="0.28"  data-mdx="-0.27" data-mdy="0.37"  src="assets/icon-browser.png" alt="" aria-hidden="true">
+    <img class="intro-icon pos-laptop"  data-dx="0.20"  data-dy="0.25"  data-mdx="0.30"  data-mdy="0.37"  src="assets/icon-laptop.png" alt="" aria-hidden="true">
     <img class="intro-logo" src="assets/logo-center.png" alt="DecBytes">
   </div>
 </div>
@@ -1233,9 +1233,12 @@
     // Clamp outward travel to whatever room the viewport actually has,
     // so small phones never push an icon (or its transform) off-screen.
     var icons = overlay.querySelectorAll('.intro-icon');
+    var isMobile = window.innerWidth <= 640;
     icons.forEach(function (icon, i) {
-      var dx = parseFloat(icon.dataset.dx) * window.innerWidth;
-      var dy = parseFloat(icon.dataset.dy) * window.innerHeight;
+      var dxFrac = isMobile ? icon.dataset.mdx : icon.dataset.dx;
+      var dyFrac = isMobile ? icon.dataset.mdy : icon.dataset.dy;
+      var dx = parseFloat(dxFrac) * window.innerWidth;
+      var dy = parseFloat(dyFrac) * window.innerHeight;
       // keep icon fully on-screen regardless of viewport size
       var halfW = window.innerWidth / 2 - 80;
       var halfH = window.innerHeight / 2 - 80;
