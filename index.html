@@ -25,25 +25,6 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ─── TEXT WIGGLE-IN (sitewide, per-character) ─── */
-    .wchar {
-      display: inline-block;
-      opacity: 0;
-      transform: scale(0.3);
-      transform-origin: center center;
-      will-change: transform, opacity;
-    }
-    .wchar.wiggle-in {
-      animation: textWiggleIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
-      animation-delay: var(--wdelay, 0s);
-    }
-    @keyframes textWiggleIn {
-      0%   { opacity: 0; transform: scale(0.3); }
-      60%  { opacity: 1; transform: scale(1.15); }
-      80%  { transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -375,8 +356,6 @@
       border-radius: 12px;
       overflow: hidden;
     }
-    .services-grid.popping { overflow: visible; }
-
     .service-card-wrap { position: relative; }
     .service-card-wrap .service-card { height: 100%; }
 
@@ -384,35 +363,9 @@
       background: var(--navy);
       padding: 40px 36px;
       position: relative;
-      transition: background 0.3s var(--ease), transform 0.85s cubic-bezier(.22,1,.36,1), box-shadow 0.85s cubic-bezier(.22,1,.36,1), filter 0.85s cubic-bezier(.22,1,.36,1);
+      transition: background 0.3s var(--ease);
       overflow: hidden;
-      will-change: transform;
     }
-    .service-card.card-stack {
-      filter: brightness(0.72);
-    }
-    .services-grid.popping .service-card {
-      pointer-events: none;
-    }
-    .service-card.card-pop,
-    .service-card.card-stack {
-      border-radius: 14px;
-    }
-    .service-card.card-pop {
-      background: var(--navy2);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.55), 0 0 0 1px var(--accent);
-      z-index: 50;
-    }
-    .card-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(4,9,18,0.65);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s cubic-bezier(.16,1,.3,1);
-      z-index: 40;
-    }
-    .card-overlay.active { opacity: 1; }
     .service-card::before {
       content: '';
       position: absolute;
@@ -1214,7 +1167,6 @@
     </div>
 
   </div>
-  <div class="card-overlay" id="cardOverlay"></div>
 </section>
 
 <!-- ─── WHY US ─── -->
@@ -1636,141 +1588,5 @@
   })();
 </script>
 
-<script>
-  // ─── TEXT WIGGLE-IN: split every heading/paragraph/list item into
-  // per-character spans; each character plays its own one-shot wiggle,
-  // staggered, the first time it's on screen (on load if above the fold,
-  // on scroll-into-view otherwise). ───
-  (function () {
-    var SKIP_ANCESTORS = 'nav, footer, .intro-overlay, .btn-primary, .btn-ghost, .nav-cta';
-    var STAGGER = 0.015; // seconds between each character
-
-    function wrapChars(node) {
-      Array.prototype.slice.call(node.childNodes).forEach(function (child) {
-        if (child.nodeType === 3) { // text node
-          if (!child.textContent.trim()) return;
-          var frag = document.createDocumentFragment();
-          Array.prototype.forEach.call(child.textContent, function (ch) {
-            if (/\s/.test(ch)) {
-              frag.appendChild(document.createTextNode(ch));
-            } else {
-              var span = document.createElement('span');
-              span.className = 'wchar';
-              span.textContent = ch;
-              frag.appendChild(span);
-            }
-          });
-          node.replaceChild(frag, child);
-        } else if (child.nodeType === 1) {
-          wrapChars(child);
-        }
-      });
-    }
-
-    var els = Array.prototype.slice.call(document.querySelectorAll('h1, h2, h3, h4, p, li'))
-      .filter(function (el) { return !el.closest(SKIP_ANCESTORS); });
-    if (!els.length) return;
-
-    els.forEach(function (el) {
-      wrapChars(el);
-      var chars = el.querySelectorAll('.wchar');
-      chars.forEach(function (c, i) { c.style.setProperty('--wdelay', (i * STAGGER) + 's'); });
-    });
-
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          var chars = entry.target.querySelectorAll('.wchar');
-          chars.forEach(function (c) { c.classList.add('wiggle-in'); });
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-
-    els.forEach(function (el) { observer.observe(el); });
-  })();
-</script>
-<script>
-  (function () {
-    var grid = document.querySelector('.services-grid');
-    var cards = Array.prototype.slice.call(document.querySelectorAll('.service-card'));
-    var overlay = document.getElementById('cardOverlay');
-
-    var wraps = cards.map(function (card) {
-      var wrap = document.createElement('div');
-      wrap.className = 'service-card-wrap';
-      card.parentNode.insertBefore(wrap, card);
-      wrap.appendChild(card);
-      return wrap;
-    });
-
-    var history = []; // indices of cards hovered so far this session, oldest -> newest(front)
-
-    function targetFor(wrap, distFromFront, pos) {
-      var r = wrap.getBoundingClientRect();
-      var vx = window.innerWidth / 2, vy = window.innerHeight / 2;
-      var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      var tx = vx - cx, ty = vy - cy;
-      var side = (pos % 2 === 0) ? -1 : 1;
-      var fanX = side * distFromFront * 22;
-      var fanY = distFromFront * 10;
-      var rotate = side * distFromFront * 3;
-      var scale = distFromFront === 0 ? 1.18 : Math.max(0.8, 1.05 - distFromFront * 0.07);
-      return 'translate(' + (tx + fanX).toFixed(2) + 'px,' + (ty + fanY).toFixed(2) + 'px) scale(' + scale + ') rotate(' + rotate + 'deg)';
-    }
-
-    function render() {
-      var n = history.length;
-      cards.forEach(function (card, i) {
-        var wrap = wraps[i];
-        var pos = history.indexOf(i);
-        if (pos === -1) {
-          card.style.transform = '';
-          card.style.zIndex = '';
-          card.classList.remove('card-pop', 'card-stack');
-          wrap.classList.remove('hover-active');
-          return;
-        }
-        var distFromFront = (n - 1) - pos;
-        card.style.transform = targetFor(wrap, distFromFront, pos);
-        card.style.zIndex = 100 + pos;
-        card.classList.toggle('card-pop', distFromFront === 0);
-        card.classList.toggle('card-stack', distFromFront !== 0);
-        wrap.classList.toggle('hover-active', distFromFront === 0);
-      });
-      if (n > 0) {
-        grid.classList.add('popping');
-        overlay.classList.add('active');
-      } else {
-        grid.classList.remove('popping');
-        overlay.classList.remove('active');
-      }
-    }
-
-    wraps.forEach(function (wrap, i) {
-      wrap.addEventListener('mouseenter', function () {
-        var idx = history.indexOf(i);
-        if (idx !== -1) history.splice(idx, 1);
-        history.push(i);
-        render();
-      });
-      wrap.addEventListener('touchstart', function () {
-        var idx = history.indexOf(i);
-        if (idx !== -1) history.splice(idx, 1);
-        history.push(i);
-        render();
-      }, { passive: true });
-    });
-
-    function resetAll() {
-      history = [];
-      render();
-    }
-
-    grid.addEventListener('mouseleave', resetAll);
-    overlay.addEventListener('click', resetAll);
-    window.addEventListener('resize', resetAll);
-  })();
-</script>
 </body>
 </html>
